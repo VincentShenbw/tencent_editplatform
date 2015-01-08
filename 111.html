@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>你好</title> 
+</head> 
+
+<body> 
+<div id="aa">
+    <input type="button" onclick="saveAs(blob, 'hello world.txt');">anniu</input>
+</div> 
+
+<script language="javascript"> 
+
+var blob = new Blob(['body { color: red; }\ndsada'], {type: 'text/plain'});
+var URL = URL || webkitURL || window;  
+ function saveAs(blob, filename) {
+    var type = blob.type;
+    var force_saveable_type = 'application/octet-stream';
+    if (type && type != force_saveable_type) { // 强制下载，而非在浏览器中打开
+        var slice = blob.slice || blob.webkitSlice || blob.mozSlice;
+        blob = slice.call(blob, 0, blob.size, force_saveable_type);
+    } 
+     var url = URL.createObjectURL(blob);
+    var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+    save_link.href = url;
+    save_link.download = filename; 
+    var event = document.createEvent('MouseEvents');
+    event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    save_link.dispatchEvent(event);
+    URL.revokeObjectURL(url);
+} 
+
+//saveAs(blob, 'hello world.txt');
+ 
+</script> 
+
+</body> 
+</html> 

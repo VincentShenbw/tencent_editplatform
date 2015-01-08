@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="zh-cn" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #pagebody {height: 100%; margin-top: 0px;}
+      #map_qq_canvas { height: 100%; display: block; }
+      #map_google_canvas { height: 100%; display: none; }
+    </style>
+    <title>Tencent_EditPlatform</title>
+
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body onload="init()">
+    <nav class="navbar navbar-default" role="navigation" style="min-height: 75px; margin-bottom: 0px; background-color: #FFFFFF; border-color: #55ABE8;">
+      <div class="container-fluid">
+        <div class="col-xs-2 col-md-2">
+          <img src="assets/map_logo.png" style="margin: 19px 0 19px 0px;">
+        </div>
+        <div class="col-xs-3 col-md-3">
+          <form class="navbar-form navbar-left" role="search" style="margin-top: 17px;
+        margin-bottom: 17px;">
+            <div class="form-group">
+              <input type="text" class="form-control" id="latlng" placeholder="latitude,longtitude">
+            </div>
+            <button type="button" class="btn btn-default" onclick="searchlatlng();">Search</button>
+          </form>
+        </div>
+        <div class="col-xs-3 col-md-3">
+          <form class="navbar-form navbar-left" role="search" style="margin-top: 17px;
+        margin-bottom: 17px;">
+            <div class="form-group">
+              <input type="text" class="form-control" id="keywords" placeholder="keyword,region,pageindex,pagenumber">
+            </div>
+            <button type="button" class="btn btn-default" onclick="searchKeyword();">Search</button>
+          </form>
+        </div>
+        <div class="col-xs-1 col-md-1">
+          <button type="button" class="btn btn-default" style="margin-top:17px; margin-bottom:17px;" onclick="clearOverlays();">Clear</button>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid" id="pagebody">
+      <div class="row" style="height: 100%; position: relative">
+        <div class="col-xs-3 col-md-3 sidebar" id="sidebar">
+          <div class="row" id="datainout" style="height: 210px; overflow: scroll;">
+            <div style="padding-left: 15px;"><h4>数据导入导出：</h4></div>
+            <input type="text" id="number" value="0" style="display: none"/>
+            <div style="padding-left: 15px; position: relative;">
+              <input type='text' id='textfield1' style="padding: 6px 12px; border: 1px solid #cdcdcd; border-radius: 4px; width:191px;" placeholder="Input mif..."/>
+              <input type='button' class='btn btn-default' value='上传' />
+              <input type="file" id="filereader_mif0" style="position: absolute;top: 0;left: 13px;height: 34px;width:250px; filter:alpha(opacity:0); opacity: 0;" onchange="document.getElementById('textfield1').value=this.value; document.getElementById('number').value='0'; handlemiffile(0);"/>
+              <input type="button" class="btn btn-default" value="导出" onclick="SaveAsmif(0);">
+              <input type='checkbox' id='checkbox1' value="0" style="margin-left: 6px;" onclick="checkornot(this);"/>
+            </div>
+            <div style="margin-top: 10px; padding-left: 15px; position: relative;">
+              <input type='text' id='textfield2' style="padding: 6px 12px; border: 1px solid #cdcdcd; border-radius: 4px; width:191px;" placeholder="Input MID..."/>
+              <input type='button' class='btn btn-default' value='上传' />
+              <input type="file" id="filereader_mid0" style="position: absolute;top: 0;height: 34px;width:250px; filter:alpha(opacity:0); opacity: 0;" onchange="document.getElementById('textfield2').value=this.value; handlemidfile(0);"/>
+              <input type="button" class="btn btn-default" value="导出" onclick="SaveAsmid(0);">
+            </div>
+            <div style="margin-top:10px;padding-left: 15px; position: relative;">
+              <input type='text' id='textfield3' style="padding: 6px 12px; border: 1px solid #cdcdcd; border-radius: 4px; width:191px;" placeholder="Input mif..."/>
+              <input type='button' class='btn btn-default' value='上传' />
+              <input type="file" id="filereader_mif1" style="position: absolute;top: 0;left: 13px;height: 34px;width:250px; filter:alpha(opacity:0); opacity: 0;" onchange="document.getElementById('textfield3').value=this.value; document.getElementById('number').value='1'; handlemiffile(1);"/>
+              <input type="button" class="btn btn-default" value="导出" onclick="SaveAsmif(1);">
+              <input type='checkbox' id='checkbox2' value="1" style="margin-left: 6px;" onclick="checkornot(this);"/>
+            </div>
+            <div style="margin-top: 10px; padding-left: 15px; position: relative;">
+              <input type='text' id='textfield4' style="padding: 6px 12px; border: 1px solid #cdcdcd; border-radius: 4px; width:191px;" placeholder="Input MID..."/>
+              <input type='button' class='btn btn-default' value='上传' />
+              <input type="file" id="filereader_mid1" style="position: absolute;top: 0;height: 34px;width:250px; filter:alpha(opacity:0); opacity: 0;" onchange="document.getElementById('textfield4').value=this.value; handlemidfile(1);"/>
+              <input type="button" class="btn btn-default" value="导出" onclick="SaveAsmid(1);">
+            </div>
+            <div style="margin-top: 10px;padding-left: 15px; position: relative;">
+              <input type='text' id='textfield5' style="padding: 6px 12px; border: 1px solid #cdcdcd; border-radius: 4px; width:191px;" placeholder="Input mif..."/>
+              <input type='button' class='btn btn-default' value='上传' />
+              <input type="file" id="filereader_mif2" style="position: absolute;top: 0;left: 13px;height: 34px;width:250px; filter:alpha(opacity:0); opacity: 0;" onchange="document.getElementById('textfield5').value=this.value; document.getElementById('number').value='2'; handlemiffile(2);"/>
+              <input type="button" class="btn btn-default" value="导出" onclick="SaveAsmif(2);">
+              <input type='checkbox' id='checkbox3' value="2" style="margin-left: 6px;" onclick="checkornot(this);"/>
+            </div>
+            <div style="margin-top: 10px; padding-left: 15px; position: relative;">
+              <input type='text' id='textfield6' style="padding: 6px 12px; border: 1px solid #cdcdcd; border-radius: 4px; width:191px;" placeholder="Input MID..."/>
+              <input type='button' class='btn btn-default' value='上传' />
+              <input type="file" id="filereader_mid2" style="position: absolute;top: 0;height: 34px;width:250px; filter:alpha(opacity:0); opacity: 0;" onchange="document.getElementById('textfield6').value=this.value; handlemidfile(2);"/>
+              <input type="button" class="btn btn-default" value="导出" onclick="SaveAsmid(2);">
+            </div>
+          </div>
+          <div style="margin-top: 10px; border: 1px solid #55ABE8;"></div>
+
+          <div style="margin-top: 10px; height: auto">
+            <ul class="list-group">
+              <li class="list-group-item">id  name</li>
+              <!--tbody id="showRegions"></tbody--> 
+            </ul>
+            <div class="list-group" id="showRegions"></div>
+          </div>
+          <div style="margin-top: 10px;">
+            <input type="button" id="firstPage" class="btn btn-class" value="首页"/>
+            <input type="button" id="backPage" class="btn btn-class" value="上一页"/>
+            <input type="button" id="nextPage" class="btn btn-class" value="下一页"/>
+            <input type="button" id="lastPage" class="btn btn-class" value="末页"/>
+          </div>
+          <div style="margin-top: 10px;">
+            <span id="msg"></span>
+          </div> 
+
+        </div>
+        <div class="col-xs-9 col-md-9 main" id="map_qq_canvas"></div>
+        <div class="col-xs-9 col-md-9 main" id="map_google_canvas"></div>
+        <div style="position:absolute;top:25px;left:430px;">
+          <button class="btn btn-default" onclick="showinfomation()">Info</button>
+        </div>
+        <div style="position:absolute;top:25px;left:490px;">
+          <button class="btn btn-default" onclick="editpolygon()">Edit</button>
+        </div>
+        <div style="position:absolute;top:25px;left:800px" class="btn-group">
+          <button type="button" class="btn btn-default" onclick="showtencentmap();">tencent</button>
+          <button type="button" class="btn btn-default" onclick="showgooglemap();">google</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script type="text/javascript" src="jquery/jquery-2.1.1.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script charset="utf-8" src="http://map.qq.com/api/js?v=2.exp&key=4WSBZ-W23PJ-SQLFW-FAJXW-DRRJF-MXFZH"></script>
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCCiVgJbm-jORRRkkbgmt6wMLBe6ifRZhM&sensor=true"></script>
+    <script type="text/javascript">
+    var map;
+    var map_google;
+    var infoWindow;
+    var googleinfoWindow;
+    var regionItems;
+    var regionItems_gg;
+    var regionprovals;
+    var col;
+    var currentpolygon;
+    var currentpolygon_gg;
+    var currentindex;
+    var currentindexfile;
+    var currentindexfilelist;
+    var Triangles;
+    var Triangles_gg;
+    var filename;
+    var URL = URL || webkitURL || window;
+    var mifleft;
+    var qqorgg;
+    var idnum;
+    var namenum;
+    var typeshape = new Array(3);//0 for region, 1 for line, 2 for point
+
+    var searchService;
+    //var searchService_gg;
+    var markers = [];
+    var markers_gg = [];
+    //var blob = new Blob(['body { color: red; }\ndsada'], {type: 'text/plain'});
+    
+    var pagesize = 3;//每页显示的记录数
+    var recondsize = 0;//总记录数
+    var countpage = 0;//总页数
+    var nowpage= 1;
+    //var regions = new Array();//存放所有的记录  
+    var start = 0; //保存当前页开始的记录
+    var end = 0 ;//保存当前页结束的记录 
+
+    var domshowRegions = $("showRegions");
+
+    var filesnum = 3;
+
+    var init = function()
+    {
+      map = new qq.maps.Map(document.getElementById("map_qq_canvas"),{
+          center: new qq.maps.LatLng(32.398018, 119.416473),
+          zoom: 13
+      });
+      map_google = new google.maps.Map(document.getElementById("map_google_canvas"), {
+        center: new google.maps.LatLng(32.398018, 119.416473),
+        zoom: 13,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        scaleControl: true,
+        scaleControlOptions: {
+          position: google.maps.ControlPosition.LEFT_BOTTOM,
+      }
+      });
+      infoWindow = new qq.maps.InfoWindow();
+      googleinfoWindow = new google.maps.InfoWindow();
+
+      regionItems = new Array(filesnum);
+      regionItems_gg = new Array(filesnum);
+      regionprovals = new Array(filesnum);
+      Triangles = new Array(filesnum);
+      Triangles_gg = new Array(filesnum);
+      filename = new Array(2*filesnum);
+      mifleft = new Array(filesnum);
+      col = new Array(filesnum);
+
+      for (var i = 0; i < filesnum; i++)
+      {
+        regionItems[i] = new Array();
+        regionItems_gg[i] = new Array();
+        regionprovals[i] = new Array();
+        Triangles[i] = new Array();
+        Triangles_gg[i] = new Array();
+        mifleft[i] = new Array();
+        col[i] = new Array();
+      }
+
+      qqorgg = 0;
+      idnum = 0;
+      namenum = 1;
+
+      //获取分页相关的按钮
+      var firstPage = $("firstPage");
+      var backPage = $("backPage");
+      var nextPage = $("nextPage");
+      var lastPage = $("lastPage"); 
+
+      firstPage.onclick = function() {
+        nowpage = 1;
+        if (recondsize<= pagesize && recondsize > 0) {
+          start = 0;
+          end = recondsize;
+        }
+        else{
+          start=0;
+          end=pagesize;
+        }
+        showRegion(regionprovals,start,end,recondsize,countpage,domshowRegions); 
+      } 
+ 
+      backPage.onclick = function() {
+        nowpage = nowpage-1;//重新赋值 
+        if(nowpage<=1){
+          nowpage=1;
+        } 
+        if (recondsize <= pagesize && recondsize > 0) {
+          start = 0;
+          end = recondsize;
+        }
+        else{
+          start=(nowpage-1)*pagesize;
+          end = (nowpage-1)*pagesize+pagesize;
+        } 
+        showRegion(regionprovals,start,end,recondsize,countpage,domshowRegions); 
+      } 
+      nextPage.onclick = function() {
+        nowpage = nowpage+1;//重新赋值 
+        if(nowpage>=countpage){
+          nowpage=countpage;
+        } 
+        if (recondsize <= pagesize && recondsize > 0) {
+          start = 0;
+          end = recondsize;
+        }
+        else{
+          start=(nowpage-1)*pagesize;
+          if((nowpage-1)*pagesize+pagesize>=recondsize){
+            end = recondsize;
+          }else{
+            end =(nowpage-1)*pagesize+pagesize;
+          }
+        }
+        showRegion(regionprovals,start,end,recondsize,countpage,domshowRegions); 
+      }
+      lastPage.onclick = function() {
+        nowpage = countpage;//重新赋值 
+        if (recondsize <= pagesize && recondsize > 0) {
+          start = 0;
+          end = recondsize;
+        }else{ 
+          start=(nowpage-1)*pagesize;
+          end = recondsize;
+        }
+        showRegion(regionprovals,start,end,recondsize,countpage,domshowRegions); 
+      }
+
+      //设置Poi检索服务，用于本地检索、周边检索
+            searchService = new qq.maps.SearchService({
+                //检索成功的回调函数
+                complete: function(results) {
+                    //设置回调函数参数
+                    var pois = results.detail.pois;
+                    var infoWin = new qq.maps.InfoWindow({
+                        map: map
+                    });
+                    var latlngBounds = new qq.maps.LatLngBounds();
+                    for (var i = 0, l = pois.length; i < l; i++) {
+                        var poi = pois[i];
+                        //扩展边界范围，用来包含搜索到的Poi点
+                        latlngBounds.extend(poi.latLng);
+
+                        (function(n) {
+                            var marker = new qq.maps.Marker({
+                                map: map
+                            });
+                            marker.setPosition(pois[n].latLng);
+
+                            marker.setTitle(i + 1);
+                            markers.push(marker);
+
+
+                            qq.maps.event.addListener(marker, 'click', function() {
+                                infoWin.open();
+                                infoWin.setContent('<div style="width:280px;height:100px;">' + 'POI的ID为：' +
+                                    pois[n].id + '，POI的名称为：' + pois[n].name + '，POI的地址为：' + pois[n].address + '，POI的类型为：' + pois[n].type + '</div>');
+                                infoWin.setPosition(pois[n].latLng);
+                            });
+                        })(i);
+                    }
+                    //调整地图视野
+                    map.fitBounds(latlngBounds);
+                },
+                //若服务请求失败，则运行以下函数
+                error: function() {
+                    alert("出错了。");
+                }
+            });
+
+    }
+
+    function showtencentmap()
+    {
+      document.getElementById("map_qq_canvas").style.display="block";
+      document.getElementById("map_google_canvas").style.display="none";
+      qqorgg = 0;
+    }
+
+    function showgooglemap()
+    {
+      document.getElementById("map_qq_canvas").style.display="none";
+      document.getElementById("map_google_canvas").style.display="block";
+      qqorgg = 1;
+    }
+
+    function handlemiffile(number) {
+      var textcontent;
+      var reader = new FileReader();
+      if (typeof (FileReader) == "undefined"){
+        alert("your browser doesn't support filereader");
+        return;
+      }
+      var s = "filereader_mif" + number.toString();
+      var file = document.getElementById(s).files[0];
+      filename[number] = file.name;
+      reader.onload = function (e){
+        textcontent = this.result;
+        mifprocess(textcontent);
+      }
+      reader.onerror = function (e){
+        alert("error<br>");
+      }
+      reader.readAsText(file);
+    }
+
+    function handlemidfile(number) {
+      var textcontent;
+      var reader = new FileReader();
+      if (typeof (FileReader) == "undefined"){
+        alert("your browser doesn't support filereader");
+        return;
+      }
+      var s = "filereader_mid" + number.toString();
+      var file = document.getElementById(s).files[0];
+      filename[number+3] = file.name;
+      reader.onload = function (e){
+        textcontent = this.result;
+        midprocess(textcontent);
+      }
+      reader.onerror = function (e){
+        alert("error<br>");
+      }
+      reader.readAsText(file);
+    }
+
+    function SaveAsmif(number)
+    {
+      var content = mifrecon(number);
+      var blob = new Blob([content], {type: 'text/plain'});
+      var type = blob.type;
+      var force_saveable_type = 'application/octet-stream';
+      if (type && type != force_saveable_type) { // 强制下载，而非在浏览器中打开
+        var slice = blob.slice || blob.webkitSlice || blob.mozSlice;
+        blob = slice.call(blob, 0, blob.size, force_saveable_type);
+      } 
+      var url = URL.createObjectURL(blob);
+      var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+      save_link.href = url;
+      save_link.download = filename[number]; 
+      var event = document.createEvent('MouseEvents');
+      event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      save_link.dispatchEvent(event);
+      URL.revokeObjectURL(url);
+    }
+
+    function SaveAsmid(number)
+    {
+      var content = midrecon(number);
+      var blob = new Blob([content], {type: 'text/plain'});
+      var type = blob.type;
+      var force_saveable_type = 'application/octet-stream';
+      if (type && type != force_saveable_type) { // 强制下载，而非在浏览器中打开
+        var slice = blob.slice || blob.webkitSlice || blob.mozSlice;
+        blob = slice.call(blob, 0, blob.size, force_saveable_type);
+      } 
+      var url = URL.createObjectURL(blob);
+      var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+      save_link.href = url;
+      save_link.download = filename[number+3]; 
+      var event = document.createEvent('MouseEvents');
+      event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+      save_link.dispatchEvent(event);
+      URL.revokeObjectURL(url);
+    }
+
+    function mifprocess(textcontent) {
+      var str = textcontent.split("\r\n\r\n");
+      var number = document.getElementById("number").value.toString();
+      mifleft[number][0] = "";
+      mifleft[number][0] += str[0];
+      mifleft[number][0] += "\r\n\r\n";
+      var columes = str[0].split("\r\n");
+      var line;
+      var colnum;
+      //col = new Array();
+      for (var i = 4; i < columes.length-1; i++)
+      {
+        if (i == 4)
+        {
+          line = columes[i].split(" ");
+          colnum = parseInt(line[1]);
+        }
+        else if (i < 5 + colnum)
+        {
+          line = columes[i].split("  ");
+          var lines = line[1].split(" ");
+          col[number].push(lines[0]);
+        }
+      }
+      if (str[1].indexOf("Region") != -1)
+      {
+        typeshape[number] = 0;
+      }
+      else if (str[1].indexOf("Pline") != -1)
+      {
+        typeshape[number] = 1;
+      }
+      else
+      {
+        typeshape[number] = 2;
+      }
+      var items = str[1].split("Region  1\r\n");
+      for (var i = 1; i < items.length; i++)
+      {
+        var region = items[i].split("\r\n");
+        var pointsnum = parseInt(region[0]);
+        var triangleCoords = new Array();
+        var triangleCoords_gg = new Array();
+        mifleft[number][i] = "";
+        for (var j = 1; j <= pointsnum; j++)
+        {
+          var xys = region[j].split(" ");
+          triangleCoords.push(new qq.maps.LatLng(parseFloat(xys[1]), parseFloat(xys[0])));
+          triangleCoords_gg.push(new google.maps.LatLng(parseFloat(xys[1]), parseFloat(xys[0])));
+        }
+        for (var j = pointsnum+1; j < pointsnum+4; j++)
+        {
+          mifleft[number][i] += region[j];
+          mifleft[number][i] += "\r\n";
+        }
+        regionItems[number].push(triangleCoords);
+        regionItems_gg[number].push(triangleCoords_gg);
+        //drawpolygon(triangleCoords);
+      }
+    }
+
+    function mifrecon(number)
+    {
+      var content = "";
+      content += mifleft[number][0];
+      for (var i = 0; i < regionItems.length; i++)
+      {
+        content += "Region  1\r\n";
+        content += "  ";
+        content += regionItems[number][i].length;
+        content += "\r\n";
+        for (var j = 0; j < regionItems[number][i].length; j++)
+        {
+          content += regionItems[number][i][j].getLng();
+          content += " ";
+          content += regionItems[number][i][j].getLat();
+          content += "\r\n";
+        }
+        content += mifleft[number][i+1];
+      }
+      return content;
+    }
+
+    function midprocess(textcontent) {
+      var lines = textcontent.split("\r\n");
+      var number = document.getElementById("number").value.toString();
+      //alert(lines.length);
+      //alert(lines[3]);
+      for (var i = 0; i < lines.length-1; i++)
+      {
+        var proval = lines[i].split(",");
+        var properties = new Array();
+        for (var j = 0; j < proval.length; j++)
+        {
+          properties.push(proval[j]);
+        }
+        regionprovals[number].push(properties);
+      }
+
+    }
+
+    function midrecon(number) {
+      var content = "";
+      //alert(content);
+      for (var i = 0; i < regionprovals[number].length; i++)
+      {
+        for (var j = 0; j < regionprovals[number][i].length; j++)
+        {
+          if (j != 0)
+          {
+            content += ",";
+          }
+          content += regionprovals[number][i][j];
+        }
+        content += "\r\n";
+      }
+      return content;
+    }
+
+    function checkornot(checkbox) {
+      var target = checkbox.value;
+      if (checkbox.checked)
+      {
+        draw(target);
+      }
+      else
+      {
+        removemif(target);
+      }
+    }
+
+    function draw(target)
+    {
+      currentindexfile = parseInt(target);
+      currentindexfilelist = parseInt(target);
+      idnamenums();
+      recondsize = regionprovals[currentindexfilelist].length; //得出总记录数
+      //计算出总页数
+      countpage = recondsize % pagesize == 0 ? recondsize / pagesize : Math.ceil(recondsize / pagesize); 
+      if (recondsize > pagesize) { //当总记录大于pagezie 思路 从后往前数3个数
+        start = recondsize-pagesize;
+        end=recondsize;
+      }
+      else{ // pagesize start =1;
+        start=0;
+        end=recondsize; //end=实际的个数 就是 recondsize
+      }
+      showRegion(regionprovals,start,end,recondsize,countpage,domshowRegions);
+
+      var number = parseInt(target);
+      map.setCenter(regionItems[number][0][0]);
+      map_google.setCenter(regionItems_gg[number][0][0]);
+      for (var i = 0; i < regionItems[number].length; i++)
+      {
+          drawpolygon_qq(number, regionItems[number][i]);
+          drawpolygon_gg(number, regionItems_gg[number][i]);
+      }
+    }
+
+    function idnamenums()
+    {
+      for (var i = 0; i < col[currentindexfilelist].length; i++)
+      {
+        if (col[currentindexfilelist][i] == "id")
+        {
+          idnum = i;
+        }
+        if (col[currentindexfilelist][i] == "name")
+        {
+          namenum = i;
+        }
+      }
+    }
+
+    function removemif(target)
+    {
+      //if (target == "mif1")
+      //{
+        var number = target.toString();
+        while (Triangles[number].length != 0)
+        {
+            Triangles[number][0].setMap(null);
+            Triangles[number].shift();
+            Triangles_gg[number][0].setMap(null);
+            Triangles_gg[number].shift();
+        }
+      //}
+    }
+
+    function drawpolygon_qq(number, triangleCoords) {
+          var bermudaTriangle;
+          // Construct the polygon
+          // Note that we don't specify an array or arrays, but instead just
+          // a simple array of LatLngs in the paths property
+          bermudaTriangle = new qq.maps.Polygon({
+              path: triangleCoords,
+              strokeColor: qq.maps.Color.fromHex("#000", 0.8),
+              strokeWeight: 2,
+              fillColor: qq.maps.Color.fromHex("#000", 0.35),
+          });
+          bermudaTriangle.setMap(map);
+          Triangles[number].push(bermudaTriangle);
+
+          qq.maps.event.addDomListener(bermudaTriangle, "click", function(event) {
+              if (currentpolygon != null)
+              {
+                replaceregion();
+
+                currentpolygon.setOptions({
+                  strokeColor: qq.maps.Color.fromHex("#000", 0.8),
+                  strokeWeight: 2,
+                  editable: false,
+                });
+              }
+              currentpolygon = bermudaTriangle;
+              currentpolygon.setOptions({
+                  strokeColor: qq.maps.Color.fromHex("#FF0000", 0.8),
+                  strokeWeight: 4,
+              });
+              infoWindow.setPosition(currentpolygon.getPath().getAt(0));
+              if (qqorgg == 0) {
+                currentindex = SearchIndex();
+                google.maps.event.trigger(Triangles_gg[currentindexfile][currentindex], "click", event);
+              }
+              /*if (document.getElementById("map_qq_canvas").style.display!="none")
+              {
+                google.maps.event.trigger(Triangles_gg[currentindex], "click", event);
+              }*/
+          });
+
+    }
+
+    function drawpolygon_gg(number, triangleCoords_gg)
+    {
+      var bermudaTriangle_gg;
+          // Construct the polygon
+          // Note that we don't specify an array or arrays, but instead just
+          // a simple array of LatLngs in the paths property
+          bermudaTriangle_gg = new google.maps.Polygon({
+              path: triangleCoords_gg,
+              strokeColor: "#000000",
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: "#000000",
+              fillOpacity: 0.35,
+          });
+          bermudaTriangle_gg.setMap(map_google);
+          Triangles_gg[number].push(bermudaTriangle_gg);
+
+          google.maps.event.addListener(bermudaTriangle_gg, "click", function(event) {
+              if (currentpolygon_gg != null)
+              {
+                replaceregion_gg();
+
+                currentpolygon_gg.setOptions({
+                  strokeColor: "#000000",
+                  strokeOpacity: 0.8,
+                  strokeWeight: 2,
+                  editable: false,
+                });
+              }
+              currentpolygon_gg = bermudaTriangle_gg;
+              currentpolygon_gg.setOptions({
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 4,
+              });
+              googleinfoWindow.setPosition(currentpolygon_gg.getPath().getAt(0));
+              if (qqorgg == 1) {
+                currentindex = SearchIndex();
+                qq.maps.event.trigger(Triangles[currentindexfile][currentindex], "click", event);
+              }
+              /*if (document.getElementById("map_qq_canvas").style.display=="none")
+              {
+                qq.maps.event.trigger(Triangles[currentindex], "click", event);
+              }*/
+          });
+    }
+
+    function replaceregion()
+    {
+      var mvcpath = currentpolygon.getPath();
+      var currentpath = new Array();
+      var pathlen = mvcpath.getLength();
+      for (var i = 0; i < pathlen; i++)
+      {
+        currentpath.push(mvcpath.getAt(i));
+      }
+
+      var tempregionitems = new Array();
+      var temptriangles = new Array();
+      for (var i = 0; i < regionItems[currentindexfile].length; i++)
+      {
+        tempregionitems.push(regionItems[currentindexfile][i]);
+        temptriangles.push(Triangles[currentindexfile][i]);
+      }
+      for (var i = 0; i < tempregionitems.length; i++)
+      {
+        regionItems[currentindexfile].pop();
+        Triangles[currentindexfile].pop();
+      }
+      for (var i = 0; i < tempregionitems.length; i++)
+      {
+        if (i == currentindex)
+        {
+          regionItems[currentindexfile].push(currentpath);
+          Triangles[currentindexfile].push(currentpolygon);
+          continue;
+        }
+        regionItems[currentindexfile].push(tempregionitems[i]);
+        Triangles[currentindexfile].push(temptriangles[i]);
+      }
+
+      if (qqorgg == 0)
+      {
+        qqtogg(currentpath, pathlen);
+      }
+    }
+
+    function qqtogg(currentpath, pathlen)
+    {
+      var currentpath_gg = new Array();
+      for (var i = 0; i < pathlen; i++)
+      {
+        currentpath_gg.push(new google.maps.LatLng(currentpath[i].getLat(), currentpath[i].getLng()));
+      }
+      Triangles_gg[currentindexfile][currentindex].setMap(null);
+      drawpolygon_gg(currentindexfile, currentpath_gg);
+      var currentpolygon_gg = Triangles_gg[currentindexfile].pop();
+
+      var tempregionitems_gg = new Array();
+      var temptriangles_gg = new Array();
+      for (var i = 0; i < regionItems_gg[currentindexfile].length; i++)
+      {
+        tempregionitems_gg.push(regionItems_gg[currentindexfile][i]);
+        temptriangles_gg.push(Triangles_gg[currentindexfile][i]);
+      }
+      for (var i = 0; i < tempregionitems_gg.length; i++)
+      {
+        regionItems_gg[currentindexfile].pop();
+        Triangles_gg[currentindexfile].pop();
+      }
+      for (var i = 0; i < tempregionitems_gg.length; i++)
+      {
+        if (i == currentindex)
+        {
+          regionItems_gg[currentindexfile].push(currentpath_gg);
+          Triangles_gg[currentindexfile].push(currentpolygon_gg);
+          continue;
+        }
+        regionItems_gg[currentindexfile].push(tempregionitems_gg[i]);
+        Triangles_gg[currentindexfile].push(temptriangles_gg[i]);
+      }
+    }
+
+    function replaceregion_gg()
+    {
+      var mvcpath_gg = currentpolygon_gg.getPath();
+      var currentpath_gg = new Array();
+      var pathlen_gg = mvcpath_gg.getLength();
+      for (var i = 0; i < pathlen_gg; i++)
+      {
+        currentpath_gg.push(mvcpath_gg.getAt(i));
+      }
+
+      var tempregionitems_gg = new Array();
+      var temptriangles_gg = new Array();
+      for (var i = 0; i < regionItems_gg[currentindexfile].length; i++)
+      {
+        tempregionitems_gg.push(regionItems_gg[currentindexfile][i]);
+        temptriangles_gg.push(Triangles_gg[currentindexfile][i]);
+      }
+      for (var i = 0; i < tempregionitems_gg.length; i++)
+      {
+        regionItems_gg[currentindexfile].pop();
+        Triangles_gg[currentindexfile].pop();
+      }
+      for (var i = 0; i < tempregionitems_gg.length; i++)
+      {
+        if (i == currentindex)
+        {
+          regionItems_gg[currentindexfile].push(currentpath_gg);
+          Triangles_gg[currentindexfile].push(currentpolygon_gg);
+          continue;
+        }
+        regionItems_gg[currentindexfile].push(tempregionitems_gg[i]);
+        Triangles_gg[currentindexfile].push(temptriangles_gg[i]);
+      }
+      if (qqorgg == 1)
+      {
+        ggtoqq(currentpath_gg, pathlen_gg);
+      }
+    }
+
+    function ggtoqq(currentpath_gg, pathlen_gg)
+    {
+      var currentpath = new Array();
+      for (var i = 0; i < pathlen_gg; i++)
+      {
+        currentpath.push(new qq.maps.LatLng(currentpath_gg[i].lat(), currentpath_gg[i].lng()));
+      }
+      Triangles[currentindexfile][currentindex].setMap(null);
+      drawpolygon_qq(currentindexfile, currentpath);
+      var currentpolygon = Triangles[currentindexfile].pop();
+
+      var tempregionitems = new Array();
+      var temptriangles = new Array();
+      for (var i = 0; i < regionItems[currentindexfile].length; i++)
+      {
+        tempregionitems.push(regionItems[currentindexfile][i]);
+        temptriangles.push(Triangles[currentindexfile][i]);
+      }
+      for (var i = 0; i < tempregionitems.length; i++)
+      {
+        regionItems[currentindexfile].pop();
+        Triangles[currentindexfile].pop();
+      }
+      for (var i = 0; i < tempregionitems.length; i++)
+      {
+        if (i == currentindex)
+        {
+          regionItems[currentindexfile].push(currentpath);
+          Triangles[currentindexfile].push(currentpolygon);
+          continue;
+        }
+        regionItems[currentindexfile].push(tempregionitems[i]);
+        Triangles[currentindexfile].push(temptriangles[i]);
+      }
+    }
+
+    function showinfomation()
+    {
+      if (currentpolygon != null && currentpolygon_gg != null)
+      {
+        if (regionprovals[currentindexfile][currentindex] == null)
+        {
+          alert("No MID file read!");
+          return;
+        }
+        var content = '<div style="width: 300px">';
+        for (var j = 0; j < col[currentindexfile].length; j++) {
+          content += '<div style="margin-top: 5px;"><div class="col-xs-4 col-md-4"><label>'+col[currentindexfile][j]+':</label></div><div class="col-xs-8 col-md-8"><input name="property" type="text" value='+regionprovals[currentindexfile][currentindex][j]+'/></div></div>';
+
+        }
+        content += '<div><div class="col-xs-6 col-md-6"><button type="button" class="btn btn-default" onclick="infoWindow.close();googleinfoWindow.close();">Cancel</button></div><div class="col-xs-6 col-md-6"><button type="button" class="btn btn-default" onclick="Modifyproperty()">Save</button></div></div>';
+        content += '</div>';
+        infoWindow.setContent(content);
+        infoWindow.setMap(map);
+        infoWindow.open();
+        googleinfoWindow.setContent(content);
+        googleinfoWindow.open(map_google);
+      }
+    }
+
+    function SearchIndex()
+    {
+      var currentmvcpath;
+      //var qqorgg;
+      if (qqorgg == 0)
+      {
+        currentmvcpath = currentpolygon.getPath();
+        //qqorgg = 0;
+      }
+      else 
+      {
+        currentmvcpath = currentpolygon_gg.getPath();
+        //qqorgg = 1;
+      }
+      //var currentmvcpath = currentpolygon.getPath();
+      var mvcpathlen = currentmvcpath.getLength();
+      var flag, index = -1;
+      for (var z = 0; z < filesnum; z++){
+      for (var i = 0; i < regionItems[z].length; i++)
+      {
+        if (mvcpathlen != regionItems[z][i].length)
+        {
+          continue;
+        }
+        flag = true;
+        for (var j = 0; j < mvcpathlen; j++)
+        {
+          if (qqorgg == 0 && (currentmvcpath.getAt(j).getLat() != regionItems[z][i][j].getLat() ||
+              currentmvcpath.getAt(j).getLng() != regionItems[z][i][j].getLng()) || qqorgg == 1 && (currentmvcpath.getAt(j).lat() != regionItems_gg[z][i][j].lat() ||
+              currentmvcpath.getAt(j).lng() != regionItems_gg[z][i][j].lng()))
+          {
+            flag = false;
+            break;
+          }
+        }
+        if (flag)
+        {
+          index = i;
+          currentindexfile = z;
+          break;
+        }
+      }
+    }
+      return index;
+    }
+
+    function editpolygon()
+    {
+      if (currentpolygon != null) {
+        currentpolygon.setOptions({
+          editable: true,
+        });
+      }
+      if (currentpolygon_gg != null) {
+        currentpolygon_gg.setOptions({
+          editable: true,
+        });
+      }
+    }
+
+    function Modifyproperty()
+    {
+      var properties = document.getElementsByName("property");
+      for (var i = 0; i < col.length; i++)
+      {
+        regionprovals[currentindexfile][currentindex][i] = '"' + properties[i].value + '"';
+      }
+      infoWindow.close();
+      googleinfoWindow.close();
+    }
+
+    function $(id) {
+      return document.getElementById(id);
+    } 
+
+    function showRegion(regionprovals,start,end,recondsize,countpage,domshowRegions) { 
+      //清空数据
+      for ( var jj = 0; jj < domshowRegions.childNodes.length;) {
+        domshowRegions.removeChild(domshowRegions.childNodes[jj]);
+      } 
+      //for循环添加的
+      for(var i=start;i<end;i++){
+        //var Region = new Array();
+        //Region.push(regionprovals[i][parseInt("1")]);//考虑
+        //Region.push(regionprovals[i][parseInt("8")]);
+        //Region.push(regionprovals[i][parseInt("11")]);
+        //创建一行
+        var a = document.createElement("a");
+        a.className = "list-group-item";
+        //a.id = i.toString();
+        //创建列
+        //var td1 = document.createElement("td");
+        //创建文本节点
+        var td1TextNode = document.createTextNode(regionprovals[currentindexfilelist][i][idnum]);
+        //文本节点添加到td中
+        //td1.appendChild(td1TextNode); 
+        //创建列
+        //var td2 = document.createElement("td");
+        //创建文本节点
+        var td2TextNode = document.createTextNode(regionprovals[currentindexfilelist][i][namenum]);
+        //文本节点添加到td中
+        //td2.appendChild(td2TextNode); 
+        //创建列
+        //var td3 = document.createElement("td");
+        //创建文本节点
+        //var td3TextNode = document.createTextNode(regionprovals[currentindexfile][i][11]);
+        //文本节点添加到td中
+        //td3.appendChild(td3TextNode); 
+        //把列添加到行中
+        a.appendChild(td1TextNode);
+        a.appendChild(td2TextNode);
+        //a.appendChild(td3TextNode);
+        a.href = "javascript:show("+i+")";
+        //把行添加到tbody中
+        if(domshowRegions.hasChildNodes()){
+          domshowRegions.insertBefore(a, domshowRegions.firstChild);//再最后一个数据之前添加数据
+        }
+        else{
+          domshowRegions.appendChild(a);//添加到末尾
+        }
+      }
+      document.getElementById("msg").innerHTML = "总共：{" + recondsize + "}条记录,共{" + countpage + "}页";
+    } 
+
+    function show(i)
+    {
+      map.setCenter(regionItems[currentindexfilelist][i][0]);
+      qq.maps.event.trigger(Triangles[currentindexfilelist][i], "click", event);
+      map_google.setCenter(regionItems_gg[currentindexfilelist][i][0]);
+      google.maps.event.trigger(Triangles_gg[currentindexfilelist][i], "click", event);
+    }
+
+    function clearOverlays(overlays, overlays_gg) {
+      var overlay, overlay_gg;
+      while (overlay = overlays.pop()) {
+        overlay.setMap(null);
+      }
+      while (overlay_gg = overlays.pop()) {
+        overlay_gg.setMap(null);
+      }
+    }
+
+    function searchlatlng()
+    {
+      var latlng = document.getElementById("latlng").value;
+      var xy = latlng.split(",");
+      var point = new qq.maps.LatLng(xy[0], xy[1]);
+      var point_gg = new google.maps.LatLng(xy[0], xy[1]);
+      var marker = new qq.maps.Marker({map: map});
+      clearOverlays(markers, markers_gg);
+      marker.setPosition(point);
+      markers.push(marker);
+      var marker_gg = new google.maps.Marker({map: map_google});
+      marker_gg.setPosition(point_gg);
+      markers_gg.push(marker_gg);
+    }
+
+    //设置搜索的范围和关键字等属性
+    function searchKeyword() {
+      var inputstring = document.getElementById("keywords").value;
+      var strs = inputstring.split(",");
+      var keyword = strs[0];
+      var region = strs[1];
+      var pageIndex = parseInt(strs[2]);
+      var pageCapacity = parseInt(strs[3]);
+      clearOverlays(markers, markers_gg);
+      //根据输入的城市设置搜索范围
+      searchService.setLocation(region);
+      //设置搜索页码
+      searchService.setPageIndex(pageIndex);
+      //设置每页的结果数
+      searchService.setPageCapacity(pageCapacity);
+      //根据输入的关键字在搜索范围内检索
+      searchService.search(keyword);
+
+    }
+
+    </script>
+    <!--script type="text/javascript" src="js/pagination.js"></script-->
+  </body>
+</html>
